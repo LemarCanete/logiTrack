@@ -5,12 +5,16 @@ import { Button } from '@/components/ui/button'
 import {Formik} from 'formik'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
+import { db, storage, auth } from '@/firebase-config'
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 
 const page = () => {
     const [socket, setSocket] = useState(null);
     const [status, setStatus] = useState('Disconnected');
     const [rfid, setRfid] = useState('');
     const [receivedData, setReceivedData] = useState();
+    const [port, setPort] = useState(null); //for serial port
+    const [isConnected, setIsConnected] = useState(false);
 
     const connectToESP32 = () => {
         const newSocket = new WebSocket('ws://192.168.1.39/ws'); 
@@ -38,6 +42,43 @@ const page = () => {
         }
         socket && receiveData()
     }, [socket])
+
+    const connectSerial = async () => {
+        try {
+          // Request a port and open a connection
+          const selectedPort = await navigator.serial.requestPort();
+          await selectedPort.open({ baudRate: 9600 });
+          setPort(selectedPort);
+          setIsConnected(true);
+    
+          // Read data from the port
+          const textDecoder = new TextDecoderStream();
+          const readableStreamClosed = selectedPort.readable.pipeTo(textDecoder.writable);
+          const reader = textDecoder.readable.getReader();
+    
+          console.log("Connected to serial port!");
+    
+          // Output data to the console
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) {
+              // Allow the serial port to be closed
+              console.log("Serial port closed.");
+              break;
+            }
+            console.log(value); // Print the received data to the console
+            setRfid(value);
+          }
+    
+          // Close the port
+          reader.releaseLock();
+          await readableStreamClosed.catch(() => {});
+          await selectedPort.close();
+          setIsConnected(false);
+        } catch (error) {
+          console.error("Error connecting to serial port:", error);
+        }
+      };
 
     return (
         <div>
@@ -67,7 +108,15 @@ const page = () => {
                     }}
                     onSubmit={(values, { setSubmitting }) => {
                         setTimeout(() => {
-                        alert(JSON.stringify(values, null, 2));
+                        //alert(JSON.stringify(values, null, 2));
+                        const docData = {
+                            firstname: values.firstname,
+                            lastname: values.lastname,
+                            email: values.email,
+                        };
+                        console.log(docData);
+                        const docRef = addDoc(collection(db, "users"), docData);
+                        setDoc(doc(db, "users", docRef.id), {docid: docRef.id}, {merge:true})
                         setSubmitting(false);
                         }, 400);
                     }}
@@ -131,7 +180,7 @@ const page = () => {
                             <Label className=''>
                                 Confirm Password
                                 <span className='text-red-500 text-right ms-5'>* {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}</span>
-                                <Input className='bg-white my-2' type="confirmPassword"
+                                <Input className='bg-white my-2' type="password"
                                     name="confirmPassword"
                                     onChange={handleChange}
                                     onBlur={handleBlur}
@@ -147,7 +196,7 @@ const page = () => {
                                     onChange={e => setRfid(e.target.value)}
                                     />
 
-                                <Button type='button' variant='link' className='ms-4' onClick={sendRFIDData}>Add RFID</Button>
+                                <Button type='button' variant='link' className='ms-4' onClick={connectSerial} disabled={isConnected}>{isConnected ? 'Scan RFID Card Now' : 'Connect to RFID Scanner'}</Button>
                             </Label>
 
 

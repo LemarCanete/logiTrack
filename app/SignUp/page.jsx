@@ -6,9 +6,33 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { auth, db } from '@/firebase-config'
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 
 const SignUp = () => {
     const router = useRouter()
+
+    const createUser = async (values) => {
+        try {
+            // Create user with email and password
+            const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+            const user = userCredential.user;
+    
+            // Add user details to Firestore
+            await setDoc(doc(db, "users", user.uid), {
+                firstname: values.firstname,
+                lastname: values.lastname,
+                email: values.email,
+                createdAt: new Date().toISOString(),
+            });
+    
+            console.log("User created and added to Firestore:", user.uid);
+        } catch (error) {
+            console.error("Error creating user or adding to Firestore:", error.message);
+        }    
+    };
+
     return (
         <div className='h-screen flex items-center justify-center flex-col '>
             <Formik
@@ -34,9 +58,11 @@ const SignUp = () => {
                 }}
                 onSubmit={(values, { setSubmitting }) => {
                     setTimeout(() => {
-                    alert(JSON.stringify(values, null, 2));
+                    //alert(JSON.stringify(values, null, 2));
+                    console.log(values);
+                    createUser(values);
                     setSubmitting(false);
-                    router.push('/Dashboard');
+                    //router.push('/Dashboard'); will update when all is over
                     }, 400);
                 }}
                 >
@@ -94,7 +120,7 @@ const SignUp = () => {
                         <Label className=''>
                             Confirm Password
                             <span className='text-red-500 text-right ms-5'>* {errors.confirmPassword && touched.confirmPassword && errors.confirmPassword}</span>
-                            <Input className='bg-white my-2' type="confirmPassword"
+                            <Input className='bg-white my-2' type="password"
                                 name="confirmPassword"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
