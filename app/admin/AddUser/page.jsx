@@ -9,39 +9,9 @@ import { db, storage, auth } from '@/firebase-config'
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 
 const page = () => {
-    const [socket, setSocket] = useState(null);
-    const [status, setStatus] = useState('Disconnected');
     const [rfid, setRfid] = useState('');
-    const [receivedData, setReceivedData] = useState();
     const [port, setPort] = useState(null); //for serial port
     const [isConnected, setIsConnected] = useState(false);
-
-    const connectToESP32 = () => {
-        const newSocket = new WebSocket('ws://192.168.1.39/ws'); 
-        newSocket.onopen = () => setStatus('Connected');
-        newSocket.onclose = () => setStatus('Disconnected');
-        newSocket.onerror = (error) => console.error('WebSocket Error:', error);
-
-        setSocket(newSocket);
-    };
-
-    const sendRFIDData = () => {
-        if (socket && socket.readyState === WebSocket.OPEN) {
-            socket.send(JSON.stringify({ type: 'rfid', data: rfid }));
-        } else {
-            console.error('WebSocket is not connected');
-        }
-    };
-
-    useEffect(()=>{
-        const receiveData = () =>{
-            socket.onmessage = (event) => {
-                console.log('Received data:', event.data);
-                setReceivedData(event.data);
-            };
-        }
-        socket && receiveData()
-    }, [socket])
 
     const connectSerial = async () => {
         try {
@@ -131,7 +101,6 @@ const page = () => {
                         isSubmitting,
                     }) => (
                         <form onSubmit={handleSubmit} className='h-5/6 lg:h-4/6 w-5/6 lg:w-2/6 bg-gray-100 p-10 rounded-lg flex flex-col justify-around'>
-                            <Button variant='link' className='underline' onClick={connectToESP32} type='button'>{status}</Button>
                             <h1 className="text-center text-2xl mb-2">Add User</h1>
                             {/* first name */}
                             <div className="grid lg:grid-cols-2 gap-4">
@@ -189,6 +158,18 @@ const page = () => {
                             
                             <Label className='grid lg:grid-cols-3 gap-1 items-center'>
                                 Add RFID Card
+
+                                <Input className='bg-white my-2' type="rfid"
+                                    name="id"
+                                    value={rfid}
+                                    onChange={e => setRfid(e.target.value)}
+                                    />
+
+                                <Button type='button' variant='link' className='ms-4' onClick={connectSerial} disabled={isConnected}>{isConnected ? 'Scan RFID Card Now' : 'Connect to RFID Scanner'}</Button>
+                            </Label>
+
+                            <Label className='grid lg:grid-cols-3 gap-1 items-center'>
+                                Add Fingerprint
 
                                 <Input className='bg-white my-2' type="rfid"
                                     name="id"
