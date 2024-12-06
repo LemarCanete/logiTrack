@@ -10,40 +10,40 @@ const Rfid = () => {
     const [isConnected, setIsConnected] = useState(false);
 
     const connectSerial = async () => {
-        try {
-          // Request a port and open a connection
-          const selectedPort = await navigator.serial.requestPort();
-          await selectedPort.open({ baudRate: 9600 });
-          setPort(selectedPort);
-          setIsConnected(true);
+        // try {
+        //   // Request a port and open a connection
+        //   const selectedPort = await navigator.serial.requestPort();
+        //   await selectedPort.open({ baudRate: 9600 });
+        //   setPort(selectedPort);
+        //   setIsConnected(true);
     
-          // Read data from the port
-          const textDecoder = new TextDecoderStream();
-          const readableStreamClosed = selectedPort.readable.pipeTo(textDecoder.writable);
-          const reader = textDecoder.readable.getReader();
+        //   // Read data from the port
+        //   const textDecoder = new TextDecoderStream();
+        //   const readableStreamClosed = selectedPort.readable.pipeTo(textDecoder.writable);
+        //   const reader = textDecoder.readable.getReader();
     
-          console.log("Connected to serial port!");
+        //   console.log("Connected to serial port!");
     
-          // Output data to the console
-          while (true) {
-            const { value, done } = await reader.read();
-            if (done) {
-              // Allow the serial port to be closed
-              console.log("Serial port closed.");
-              break;
-            }
-            console.log(value); // Print the received data to the console
-            setRfid(value);
-          }
+        //   // Output data to the console
+        //   while (true) {
+        //     const { value, done } = await reader.read();
+        //     if (done) {
+        //       // Allow the serial port to be closed
+        //       console.log("Serial port closed.");
+        //       break;
+        //     }
+        //     console.log(value); // Print the received data to the console
+        //     setRfid(value);
+        //   }
     
-          // Close the port
-          reader.releaseLock();
-          await readableStreamClosed.catch(() => {});
-          await selectedPort.close();
-          setIsConnected(false);
-        } catch (error) {
-          console.error("Error connecting to serial port:", error);
-        }
+        //   // Close the port
+        //   reader.releaseLock();
+        //   await readableStreamClosed.catch(() => {});
+        //   await selectedPort.close();
+        //   setIsConnected(false);
+        // } catch (error) {
+        //   console.error("Error connecting to serial port:", error);
+        // }
     };
 
     return (
