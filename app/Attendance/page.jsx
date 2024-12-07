@@ -1,6 +1,6 @@
 'use client'
 import React, { useState } from 'react'
-import Navbar from '../../Components/Navbar'
+import Navbar from '../Components/Navbar'
 import { useRouter } from 'next/navigation';
 import {Button} from '@/components/ui/button'
 import { Label } from '@radix-ui/react-label'
@@ -54,9 +54,8 @@ const columns = [
 const paginationModel = { page: 0, pageSize: 10 };
 
 
-const Attendance = ({params}) => {
-    const eventName = params.attendance
-    const router = useRouter()
+const Attendance = () => {
+    const router = useRouter();
     const [data, setData] = useState([
         { id: 1, lastName: 'Snow', firstName: 'Jon', age: 35 },
         { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 42 },
@@ -76,10 +75,10 @@ const Attendance = ({params}) => {
                 <div className="flex items-center gap-4 justify-center mx-auto">
                     <IoChevronBackCircleSharp className='text-5xl text-gray-200 cursor-pointer hover:text-gray-500'
                         onClick={()=> router.back()}/>
-                    <h1 className="text-xl md:text-3xl font-semibold text-center tracking-wide leading-3">{eventName}'s Attendance Log</h1>
+                    <h1 className="text-xl md:text-3xl font-semibold text-center tracking-wide leading-3">Attendance Log</h1>
                     {/* Add members */}
                 </div>
-                <Dialog>
+                {/* <Dialog>
                     <DialogTrigger asChild>
                         <Button variant="" className='w-5/6 lg:w-64 mx-auto'>Add Member</Button>
                     </DialogTrigger>
@@ -97,7 +96,8 @@ const Attendance = ({params}) => {
                             <Button >Add</Button>
                         </DialogFooter>
                     </DialogContent>
-                </Dialog>
+                </Dialog> */}
+                <Button variant="" className='w-5/6 lg:w-64 mx-auto' onClick={()=> router.push('./AddUser')}>Enroll a member</Button>
             </div>
             {/* table */}
             <div className="my-6">

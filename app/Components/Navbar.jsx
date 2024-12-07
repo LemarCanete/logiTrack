@@ -24,8 +24,10 @@ const Navbar = () => {
                 <div className="">
                     <Link href='./Dashboard' className="font-bold me-56 p-4">LogiTrack</Link>
                     {/* <Link className="px-10 py-4 hover:underline hover:bg-white " href='./Dashboard'>Dashboard</Link> */}
-                    <Link className="px-10 py-4 hover:underline hover:bg-white " href='./Events'>Events</Link>
-                    <Link className="px-10 py-4 hover:underline hover:bg-white " href='./Users'>Users</Link>
+                    {/* <Link className="px-10 py-4 hover:underline hover:bg-white " href='./Events'>Events</Link> */}
+                    <Link className="px-10 py-4 hover:underline hover:bg-white " href='/Attendance'>Attendance Log</Link>
+                    <Link className="px-10 py-4 hover:underline hover:bg-white " href='/Users'>Users</Link>
+                    <Link className="px-10 py-4 hover:underline hover:bg-white " href='/AddUser'>Add User</Link>
                     {/* <Link className="px-10 py-4 hover:underline hover:bg-white " href='./Settings'>Settings</Link> */}
                     {/* <Link className="px-10 py-4 hover:underline hover:bg-white " href='./Logs'>Logs</Link> */}
                     {/* <Link className="px-10 py-4 hover:underline hover:bg-white " href='./Reports'>Reports</Link> */}
