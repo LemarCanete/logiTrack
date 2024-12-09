@@ -3,8 +3,10 @@ import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import {Formik} from 'formik'
+import { Box } from '@mui/material'
 
-const Demographics = () => {
+const Demographics = ({handleBack, handleNext, activeStep, steps}) => {
+
     return (
             <Formik
                 initialValues={{ email: '', password: '', firstname: '', lastname: '', password: '', confirmPassword: '', id: '' }}
@@ -34,13 +36,17 @@ const Demographics = () => {
                         firstname: values.firstname,
                         lastname: values.lastname,
                         email: values.email,
+                        password: values.password
                     };
+                    sessionStorage.setItem('values', JSON.stringify(docData));
                     console.log(docData);
-                    const docRef = addDoc(collection(db, "users"), docData);
-                    setDoc(doc(db, "users", docRef.id), {docid: docRef.id}, {merge:true})
+                    // const docRef = addDoc(collection(db, "users"), docData);
+                    // setDoc(doc(db, "users", docRef.id), {docid: docRef.id}, {merge:true})
                     setSubmitting(false);
                     }, 400);
+                    handleNext();
                 }}
+
                 >
                 {({
                     values,
@@ -107,9 +113,18 @@ const Demographics = () => {
                                 value={values.confirmPassword}/>
                         </Label>
                         
-                        {/* <Button type="submit" disabled={isSubmitting}>
-                            Submit
-                        </Button> */}
+                        <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2}}>
+                                <Button
+                                    color="inherit"
+                                    disabled={activeStep === 0}
+                                    onClick={handleBack}
+                                    sx={{ mr: 1 }}
+                                    >Back</Button>
+                                    <Box sx={{ flex: '1 1 auto' }} />
+                                    <Button type='submit' disabled={isSubmitting}>
+                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                                </Button>
+                            </Box>
                     </form>
                 )}
             </Formik>

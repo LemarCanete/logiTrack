@@ -2,11 +2,9 @@
 import React, {useEffect, useState} from 'react'
 import Navbar from '../Components/Navbar'
 import { Button } from '@/components/ui/button'
-import {Formik} from 'formik'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
-import { db, storage, auth } from '@/firebase-config'
-import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
+
 import FingerPrint from './FingerPrint'
 import Rfid from './Rfid'
 import Demographics from './Demographics'
@@ -75,64 +73,23 @@ const page = () => {
                         <React.Fragment>
                             <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
 
-                            <Demographics />
+                            <Demographics handleBack={handleBack} handleNext={handleNext} activeStep={activeStep} steps={steps}/>
 
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2}}>
-                                <Button
-                                    color="inherit"
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    sx={{ mr: 1 }}
-                                    >
-                                    Back
-                                    </Button>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    <Button onClick={handleNext}>
-                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                </Button>
-                            </Box>
                         </React.Fragment>
                     ) : (activeStep === 1) ? (
                         <React.Fragment>
                             <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
 
-                            <Rfid />
+                            <Rfid handleBack={handleBack} handleNext={handleNext} activeStep={activeStep} steps={steps}/>
 
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2}}>
-                                <Button
-                                    color="inherit"
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    sx={{ mr: 1 }}
-                                    >
-                                    Back
-                                    </Button>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    <Button onClick={handleNext}>
-                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                </Button>
-                            </Box>
                         </React.Fragment>
                     ) : (
                         <React.Fragment>
                             <Typography sx={{ mt: 2, mb: 1 }}>Step {activeStep + 1}</Typography>
 
-                            <FingerPrint />
+                            <FingerPrint handleBack={handleBack} handleNext={handleNext} activeStep={activeStep} steps={steps}/>
 
-                            <Box sx={{ display: 'flex', flexDirection: 'row', pt: 2}}>
-                                <Button
-                                    color="inherit"
-                                    disabled={activeStep === 0}
-                                    onClick={handleBack}
-                                    sx={{ mr: 1 }}
-                                    >
-                                    Back
-                                    </Button>
-                                    <Box sx={{ flex: '1 1 auto' }} />
-                                    <Button onClick={handleNext}>
-                                    {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                                </Button>
-                            </Box>
+                            
                         </React.Fragment>
                     )}
                 </Box>
