@@ -126,9 +126,9 @@ const Rfid = ({handleBack, handleNext, activeStep, steps}) => {
                         sx={{ mr: 1 }}
                         >Back</Button>
                         <Box sx={{ flex: '1 1 auto' }} />
-                        <Button >
-                        {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
-                    </Button>
+                        <Button onClick={handleNext} >
+                          {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
+                        </Button>
                 </Box>
             </Label>
         </div>

@@ -6,6 +6,8 @@ import React, { useEffect, useState } from 'react'
 import { db, storage, auth } from '@/firebase-config'
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore'
 import { IoFingerPrintSharp } from "react-icons/io5";
+import { Box } from '@mui/material'
+
 
 const gifs = ['/fingerScan.webm', '/fingerFailed.webm', '/fingerSuccess.webm'];
 
@@ -57,9 +59,10 @@ const FingerPrint = ({handleBack, handleNext, activeStep, steps}) => {
             const encodedMessage = encoder.encode(message + '\n');
       
             // Write the encoded data
+            //await writer.write("fingerprint");
             await writer.write(encodedMessage);
             console.log(`Sent to Arduino: ${message}`);
-
+            sessionStorage.setItem('fingerprint id', fingerId);
           // Release the writer
           writer.releaseLock();
         } catch (error) {
@@ -93,8 +96,8 @@ const FingerPrint = ({handleBack, handleNext, activeStep, steps}) => {
                 const rfid = sessionStorage.getItem('rfid')
 
                 await setDoc(doc(db, "users", rfid), {
-                    ...demographics,
-                    fingerPrint: fingerId,
+                    demographics,
+                    fingerPrint: sessionStorage.getItem('fingerprint id'),
                     rfid: rfid
                 });
             } else if(value.includes('already')){
