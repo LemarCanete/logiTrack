@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { db } from '@/firebase-config';
+import { collection, doc, getDoc, addDoc, query, where, getDocs, Timestamp } from "firebase/firestore";
 
 const Form = () => {
   const [mode, setMode] = useState('Attendance');
@@ -7,6 +9,38 @@ const Form = () => {
   const [isConnected, setIsConnected] = useState(false);
   const [receivedData, setReceivedData] = useState('');
 
+  useEffect(() => {
+    
+    const handleData = async () => {
+      if (receivedData) {
+        try {
+          const usersRef = collection(db, "users");
+          const q = query(usersRef, where("rfid", "==", receivedData));
+          const querySnapshot = await getDocs(q);
+  
+          console.log("Query Snapshot Size:", querySnapshot.size);
+          querySnapshot.forEach((doc) => console.log("Matched User:", doc.data()));
+          if (!querySnapshot.empty) {
+            const attendanceRef = collection(db, "attendance");
+            await addDoc(attendanceRef, {
+              rfid: receivedData,
+              date: Timestamp.now()
+            });
+            console.log("Attendance record created for:", receivedData);
+          } else {
+            console.log("No user found with RFID:", receivedData);
+          }
+        } catch (error) {
+          console.error("Error processing RFID data:", error);
+        }
+      }
+    };
+  
+    handleData(); // Process received data
+  }, [receivedData]);
+  
+
+
   // Function to connect to the serial port
   const connectSerial = async () => {
     try {
@@ -14,7 +48,7 @@ const Form = () => {
       await selectedPort.open({ baudRate: 9600 });
       setPort(selectedPort);
       setIsConnected(true);
-      console.log('Connected to Arduino via Serial Port');
+      console.log('Connected to Arduino via Serial Port: ');
 
       // Start receiving data
       startReceiving(selectedPort);
@@ -38,7 +72,7 @@ const Form = () => {
           break;
         }
         console.log(`Received: ${value}`);
-        setReceivedData((prevData) => prevData + value); // Append received data
+        setReceivedData(value.trim()); // Append received data
       }
     } catch (error) {
       console.error('Error receiving data:', error);
