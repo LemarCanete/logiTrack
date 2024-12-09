@@ -71,13 +71,11 @@ const Attendance = () => {
     return (
         <div className=''>
             <Navbar />
-            <div className="mx-auto lg:w-5/6 flex flex-col lg:flex-row lg:items-center gap-4 my-6 lg:justify-between w-screen">
-                <div className="flex items-center gap-4 justify-center mx-auto">
-                    <IoChevronBackCircleSharp className='text-5xl text-gray-200 cursor-pointer hover:text-gray-500'
-                        onClick={()=> router.back()}/>
-                    <h1 className="text-xl md:text-3xl font-semibold text-center tracking-wide leading-3">Attendance Log</h1>
-                    {/* Add members */}
-                </div>
+            <div className="mx-auto lg:w-5/6 flex flex-col lg:flex-row  gap-36 my-6 w-screen lg:-pe-10">
+                <IoChevronBackCircleSharp className='text-5xl text-gray-200 cursor-pointer hover:text-gray-500 ms-36'
+                    onClick={()=> router.back()}/>
+                <h1 className="text-xl md:text-3xl font-semibold text-center tracking-wide leading-3 me-10">Attendance Log</h1>
+                {/* Add members */}
                 {/* <Dialog>
                     <DialogTrigger asChild>
                         <Button variant="" className='w-5/6 lg:w-64 mx-auto'>Add Member</Button>
@@ -97,7 +95,6 @@ const Attendance = () => {
                         </DialogFooter>
                     </DialogContent>
                 </Dialog> */}
-                <Button variant="" className='w-5/6 lg:w-64 mx-auto' onClick={()=> router.push('./AddUser')}>Enroll a member</Button>
             </div>
             {/* table */}
             <div className="my-6">

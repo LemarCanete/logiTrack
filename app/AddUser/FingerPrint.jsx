@@ -92,9 +92,9 @@ const FingerPrint = ({handleBack, handleNext, activeStep, steps}) => {
                 setScanStatus(2);
             } else if(value.includes('successful')){
                 setScanStatus(3);
-                const demographics = sessionStorage.getItem('values');
+                const demographics = JSON.parse(sessionStorage.getItem('values'));
                 const rfid = sessionStorage.getItem('rfid')
-
+                
                 await setDoc(doc(db, "users", rfid), {
                     demographics,
                     fingerPrint: sessionStorage.getItem('fingerprint id'),
@@ -160,7 +160,7 @@ const FingerPrint = ({handleBack, handleNext, activeStep, steps}) => {
                     sx={{ mr: 1 }}
                     >Back</Button>
                     <Box sx={{ flex: '1 1 auto' }} />
-                    <Button >
+                    <Button onClick={handleNext}>
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}
                 </Button>
             </Box>
