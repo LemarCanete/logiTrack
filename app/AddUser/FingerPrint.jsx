@@ -92,7 +92,7 @@ const FingerPrint = ({handleBack, handleNext, activeStep, steps}) => {
                 setScanStatus(2);
             } else if(value.includes('successful')){
                 setScanStatus(3);
-                const demographics = sessionStorage.getItem('values');
+                const demographics = JSON.parse(sessionStorage.getItem('values'));
                 const rfid = sessionStorage.getItem('rfid')
 
                 await setDoc(doc(db, "users", rfid), {
